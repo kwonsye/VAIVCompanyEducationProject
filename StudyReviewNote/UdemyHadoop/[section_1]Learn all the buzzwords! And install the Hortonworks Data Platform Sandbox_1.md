@@ -1,4 +1,4 @@
-# [Section 1] Hadoop에 대한 소개와 Hortonworks Sandbox 설치
+# [Section 1-1] Hadoop에 대한 소개와 기본 설치
 
 ## 하둡🐘
 
@@ -63,67 +63,30 @@
     OVERWRITE INTO TABLE ratings;
     ```
 
-<br>
+    - 🐞 Permission denied
 
+        - hdfs 라는 유저(`-u hdfs`) 로 hdfs에 user를 만드는 명령어를 실행
 
-## 하둡 Eco system 톺아보기🐘
+        ```
+        sudo -u hdfs hdfs dfs -mkdir /user/trendmap 
+        ```
 
-<br>
+        - 유저를 확인
+        ```
+        hdfs dfs -ls /user
+        //결과
+        drwxr-xr-x   - hdfs   supergroup          0 2020-09-09 15:00 /user/trendmap
+        ```
+        - 유저의 소유자를 `hdfs:supergroup` 에서 `trendmap`으로 변경
 
-![사진](./images/mascot.jpg)
-
-- 하둡이란?
-
-    - 컴퓨터 클러스터 상에서 돌아가는 매우 큰 데이터셋에 대한 **분산 처리와 분산 스토리지를 위한 오픈 소스 소프트웨어 플랫폼**
-
-    - 컴퓨터 클러스터? 💻
-        - 여러 대의 컴퓨터들이 연결되어 하나의 시스템처럼 동작하는 컴퓨터들의 집합
-    
-    - 즉, 하둡은 **여러 대의 컴퓨터 power를 사용해서 분산 storage의 빅데이터를 병렬로 Divide and Conquer하여 처리**하는 수단을 제공한다!
-
-- 하둡의 역사
-    - **구글**이 하둡 기원의 어무니
-    - 구글은 자사의 검색엔진이 사용하는 분산파일시스템과 MapReduce 기법을 논문으로 발표했는데, 이게 하둡의 idea가 되었다.
-    - 2006년부터 Yahoo 더그커팅에 의해서 하둡이 개발되었다.
-    - 더그커팅의 자녀가 가지고 있던 노란색 코끼리 인형의 이름이 하둡이었다는 소문🤔 
-
-- 왜 하둡을 쓸까?
-    - 데이터가 무지하게 많아지고 커짐
-    - 컴퓨터 클러스터의 많은 cpu를 쓰기 때문에 병렬로 빠른 처리가 가능함
-    - 컴퓨터의 수평적인 확장을 통해서 더 많은 데이터와 빠른 처리가 가능함
-    - 하둡 상에서 적절하게 interactive한 쿼리를 통해서 빅데이터를 빨리 처리하고 분석할 수 있음
-
-- Core 하둡 Ecosystem
-
-    ![사진](./images/hadoop.png)
-    - 핑크색 : 하둡을 구성하는 core 부분
-    - 나머지는 하둡의 세부적인 문제를 해결하기 위해서 나중에 계속 추가되어진 어플리케이션들
-    - **HDFS**
-        - Hadoop Distributed File System
-        - 컴퓨터 클러스터에 **빅데이터를 분산 저장**하고, 저장된 데이터를 빠르게 처리할 수 있게 하는 파일시스템
-        - 파일을 특정크기의 **블록**으로 나누어 **분산된 서버에 저장**
-        - 여러 노드에 **데이터를 복제**해서 back up 해놓기 때문에, 장애로 데이터 분실시 데이터 유실을 방지함
-    
-    - **Yarn**
-        - Yet Another Resource Nagotiator
-        - 하둡 2.0부터 제공되는 컴퓨터 클러스터의 리소스 관리 플랫폼
-        - 각 어플리케이션에 필요한 리소스(CPU, 메모리, 디스크 등)를 할당하고 모니터링
-        - MapReduce의 단점을 보완하기 위해서 등장
-
-    - **MapReduce**
-        - 빅데이터를 처리를 위한 병렬 처리 분산 프로그래밍 모델
-        - 데이터를 여러 노드에 병렬로 분산해서 처리
-        - 클러스터에 있는 노드들을 주기적으로 모니터링해서, 응답이 없을 경우 해당 노드를 클러스터에서 제외하고 데이터를 복원해서, 작업을 계속 처리할 수 있도록 관리
-        - mappers + reducers
-        - mappers
-            - data transform
-            - 흩어져 있는 데이터를 관련 있는 데이터끼리 묶음
-        - reducers
-            - data aggregate
-            - 
-
+        ```
+        sudo -u hdfs hadoop fs -chown trendmap:trendmap /user/trendmap
+        ```
 
 <br>
+
+
+
 
 ## Reference
 - https://brownbears.tistory.com/78
@@ -132,6 +95,3 @@
 - https://bigmark.tistory.com/39
 - https://byline.network/2016/01/1-47/
 - https://stackoverflow.com/questions/50101717/hive-insert-permission-denied-user-root-access-write
-- https://yookeun.github.io/java/2015/05/24/hadoop-hdfs/
-- https://opentutorials.org/module/2926/17248
-- https://over153cm.tistory.com/entry/%EB%A7%B5%EB%A6%AC%EB%93%80%EC%8A%A4MapReduce%EB%9E%80-1
