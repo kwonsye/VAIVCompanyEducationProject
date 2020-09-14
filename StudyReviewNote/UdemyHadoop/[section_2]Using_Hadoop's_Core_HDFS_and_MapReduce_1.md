@@ -1,4 +1,4 @@
-# [Section 2] 하둡 코어를 이해해보자
+# [Section 2] HDFS를 이해해보자
 
 ## HDFS
 
@@ -67,6 +67,29 @@
 - Http / HDFS 프록시 서버
 - 자바 인터페이스
 - NFS 게이트웨이
+
+<br>
+
+## CLI 로 HDFS에서 작업해보기
+
+<br>
+
+### HDFS에 data set을 넣어보자
+
+- `ssh` 로 회사 공부용 하둡 서버에 접속
+- `hdoop fs -ls` 로 HDFS의 파일시스템을 볼 수 있다.
+-  `hadoop fs -mkdir ml-100k` 로 데이터셋을 넣을 dir를 만든다.
+- 서버 로컬에 다운 받아놨던 데이터셋 파일을 hdfs로 옮긴다. 
+    - `hadoop fs -copyFromLocal ml-100k/u.data(로컬서버 상에 데이터셋이 존재하는 path) ml-100k/u.data(hdfs 상에 데이터셋을 복사할 path)`
+
+### HDFS 에 data set 삭제하기
+
+- 데이터셋 파일 삭제 
+    - `hadoop fs -rm ml-100k/u.data`
+- 폴더 삭제 
+    - `hadoop fs -rmdir ml-100k`
+
+<br>
 
 ## Reference
 
