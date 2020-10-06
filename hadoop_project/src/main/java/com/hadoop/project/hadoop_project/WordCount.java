@@ -27,12 +27,12 @@ public class WordCount {
             extends Mapper<Object, Text, Text, IntWritable> { //Mapper<INPUT_KEY_TYPE, INPUT_VALUE_TYPE, OUTPUT_KEY_TYPE, OUTPUT_VALUE_TYPE>
 
         /*
-        *어떤 key 나 어떤 value 도 hadoop mr 에서 사용하려면 type이 writable 로 구현되어야한다.
-        *IntWritable & Text implements WritableComparable
-        *Writable : DataInput 과 DataOutput 을 기반으로한 시리얼라이즈 오브젝트
-        *    - write() : 해당 데이터 객체를 serialize 하여 byte 스트림으로 변경 시켜주는 역할
-        *    - readFields() : byte 스트림을 다시 원래 객체로 deserialize 시키는 역할
-        */
+         *어떤 key 나 어떤 value 도 hadoop mr 에서 사용하려면 type이 writable 로 구현되어야한다.
+         *IntWritable & Text implements WritableComparable
+         *Writable : DataInput 과 DataOutput 을 기반으로한 시리얼라이즈 오브젝트
+         *    - write() : 해당 데이터 객체를 serialize 하여 byte 스트림으로 변경 시켜주는 역할
+         *    - readFields() : byte 스트림을 다시 원래 객체로 deserialize 시키는 역할
+         */
         private final static IntWritable ONE = new IntWritable(1);
         private Text word = new Text(); //Text : stores text using standard UTF8 encoding. It provides methods to serialize, deserialize, and compare texts at byte level.
 
@@ -87,17 +87,17 @@ public class WordCount {
         job.setMapperClass(TokenizerMapper.class);
 
         /*
-        * Combiner : Mapper 와 Reducer 사이에서 진행되는 것으로서 선택적으로 적용이 가능
-        * Combiner 를 적용하면 map task 가 수행되는 모든 node 에 대해 Combiner class 의 instance 가 적용됨
-        * 각각의 node 에서 Mapper instance 가 산출한 데이터를 입력받고 Combiner 가 지정된 작업을 하면 그 결과물을 Reducer 에게 보냄
-        * Combiner 는 일종의 “mini-reduce” 프로세스로서 하나의 단위 컴퓨터에서 생성된 데이터만을 대상으로 함
-        * node 별로 중간합산 하여 각 단어 당 한번씩만 Reducer 에 전달되므로 shuffle 프로세스에서 요구되는 대역폭을 획기적으로 줄일 수 있게 되고 결과적으로 job 처리속도가 개선됨
-        * mapper 의 부분합을 구한다.
-        * IO(disk+network), reducer 의 계산량을 줄이기 위함
-        * IO를 줄이기 위해서 압축 기술도 많이 발전했다.
-        * streaming 을 쓰는 압축 기술도 있다. ex) snappy(https://github.com/google/snappy), Zstandard(https://github.com/facebook/zstd)
-        * 대용량 압축 기술 : bzip, 7Z
-        */
+         * Combiner : Mapper 와 Reducer 사이에서 진행되는 것으로서 선택적으로 적용이 가능
+         * Combiner 를 적용하면 map task 가 수행되는 모든 node 에 대해 Combiner class 의 instance 가 적용됨
+         * 각각의 node 에서 Mapper instance 가 산출한 데이터를 입력받고 Combiner 가 지정된 작업을 하면 그 결과물을 Reducer 에게 보냄
+         * Combiner 는 일종의 “mini-reduce” 프로세스로서 하나의 단위 컴퓨터에서 생성된 데이터만을 대상으로 함
+         * node 별로 중간합산 하여 각 단어 당 한번씩만 Reducer 에 전달되므로 shuffle 프로세스에서 요구되는 대역폭을 획기적으로 줄일 수 있게 되고 결과적으로 job 처리속도가 개선됨
+         * mapper 의 부분합을 구한다.
+         * IO(disk+network), reducer 의 계산량을 줄이기 위함
+         * IO를 줄이기 위해서 압축 기술도 많이 발전했다.
+         * streaming 을 쓰는 압축 기술도 있다. ex) snappy(https://github.com/google/snappy), Zstandard(https://github.com/facebook/zstd)
+         * 대용량 압축 기술 : bzip, 7Z
+         */
         job.setCombinerClass(IntSumReducer.class); //setCombinerClass(combiner : Class<? extends Reducer>) Combiner 는 Reducer interface를 확장해서 만들 수 있음
         job.setReducerClass(IntSumReducer.class);
 
