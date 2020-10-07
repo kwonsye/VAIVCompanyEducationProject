@@ -9,6 +9,7 @@
     - 스파크 내에 여러 **분산 노드에 걸쳐서 저장되는 immutable 한 데이터의 집합**
     - 각각의 RDD는 **키를 기반으로** 덩어리(Chunk) 단위로 쪼개져 있고 실행 노드(Executor Node)로 분산됨 -> 데이터셋에 대한 연산 속도 빠름
     - 병렬로 동작
+    - RDD라고 무조건 메모리에만 상주하는게 아니다. 시간이 지나면 날라감. 다시 필요하다면 리니지를 가지고 다시 만듦 == **탄성력 Resilient**
 
     - RDD에서 지원하는 딱 두가지 Operation
         - ***Transformation***
@@ -65,6 +66,7 @@
 
 - IO intensive, CPU intensive 모두 Hadoop에 비해 빠르고 좋다.
 - 머신 개수가 늘어도 Hadoop에 비해 빠르고 좋다.
+- 스파크가 짱인듯
 
 <br>
 
