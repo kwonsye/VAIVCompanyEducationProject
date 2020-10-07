@@ -12,7 +12,7 @@ public class WordCount {
     private static final Long FLUSH_UNIT_OF_MAP_SIZE = 5_000_000L;
 
     public static void main(String[] args) throws IOException {
-        // Out of memory with JVM 256Xmx
+        // Out of memory with JVM 512Xmx
         wordCountForOutOfMemory(BIGDATA_FILE_NAME);
 
         // Divide and conquer
@@ -141,7 +141,7 @@ public class WordCount {
     }
 
     private static String[] sortingKeySet(Set<String> keySet) {
-        String[] sortedKeys = keySet.toArray(String[]::new);
+        String[] sortedKeys = keySet.toArray(String[]::new); //java 11
         Arrays.sort(sortedKeys);
         return sortedKeys;
     }
