@@ -21,29 +21,32 @@ public class RatingDistribution {
     private static final Long INITIAL_VALUE_OF_COUNT = 0L;
 
     public static void main(String[] args) throws IOException {
-        calculateRatingDistribution();
+
+        parseInputFileAndWriteUnitMapToFiles(PROJECT_DATA_DIRECTORY + REVIEW_DATA_JSON_FILE_NAME);
+
+        KWayMergingOfAllOutputFiles(PROJECT_DATA_DIRECTORY + OUTPUT_SUB_DATA_DIRECTORY);
     }
 
-    private static void calculateRatingDistribution() throws IOException {
+    private static void parseInputFileAndWriteUnitMapToFiles(String inputFilePath) throws IOException {
 
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(PROJECT_DATA_DIRECTORY + REVIEW_DATA_JSON_FILE_NAME));
+        Map<Long, List<Long>> ratingsMap = new HashMap<>(); //key:bookId - value : list(rating1 count,rating2 count,rating3 count..)
+
+        BufferedReader reader = FileIOUtil.getBufferedReader(inputFilePath);
         String json;
         ObjectMapper mapper = new ObjectMapper();
-        Map<Long, List<Long>> ratingsMap = new HashMap<>(); //key:bookId - value : list(rating1 count,rating2 count,rating3 count..)
         long fileCount = 0;
 
-        while ((json = bufferedReader.readLine()) != null) {
+        while ((json = reader.readLine()) != null) {
             ReviewData reviewData = mapper.readValue(json, ReviewData.class);
             Long bookId = reviewData.getBookId();
             Integer rating = reviewData.getRating();
 
-            initializeValueList(ratingsMap, bookId);
-            updateRatingCountOfBook(ratingsMap, bookId, rating);
+            initializeCountingList(ratingsMap, bookId);
+            updateCountingList(ratingsMap, bookId, rating);
 
             //divide
             if (ratingsMap.size() == FLUSH_UNIT_OF_MAP_SIZE) {
-                Long[] sortedKeys = sortingBookIds(ratingsMap.keySet());
-                writeMapDataToFile(fileCount, ratingsMap, sortedKeys);
+                writeMapDataToFile(fileCount, ratingsMap, sortingMapKeys(ratingsMap.keySet()));
                 ratingsMap.clear();
 
                 fileCount++;
@@ -52,19 +55,17 @@ public class RatingDistribution {
 
         //write last remain data
         if(!ratingsMap.isEmpty()){
-            writeMapDataToFile(fileCount, ratingsMap, sortingBookIds(ratingsMap.keySet()));
+            writeMapDataToFile(fileCount, ratingsMap, sortingMapKeys(ratingsMap.keySet()));
             ratingsMap.clear();
         }
-
-        KWayMergingOfAllOutputFiles();
     }
 
-    private static void KWayMergingOfAllOutputFiles() throws IOException {
+    private static void KWayMergingOfAllOutputFiles(String outputFilePath) throws IOException {
         Queue<RateCountingData> heap = new PriorityQueue<>();
         long lineCountingIndex = 0;
         long maxLineIndex = 0;
 
-        File outputFolder = new File(PROJECT_DATA_DIRECTORY + OUTPUT_SUB_DATA_DIRECTORY);
+        File outputFolder = new File(outputFilePath);
         File[] listOfFiles = outputFolder.listFiles();
 
         for (File file : listOfFiles) {
@@ -89,24 +90,20 @@ public class RatingDistribution {
     }
 
     private static void pollingNElementsOfHeap(Queue<RateCountingData> heap, int pollingCount) throws IOException {
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(PROJECT_DATA_DIRECTORY + FINAL_OUTPUT_RESULT_DIRECTORY + FINAL_OUTPUT_RESULT_FILE_NAME, true));
+        BufferedWriter writer = FileIOUtil.getBufferedWriter(PROJECT_DATA_DIRECTORY + FINAL_OUTPUT_RESULT_DIRECTORY + FINAL_OUTPUT_RESULT_FILE_NAME);
         int count = 0;
 
         while(!heap.isEmpty() && count < pollingCount){
-            StringBuilder builder = new StringBuilder();
             RateCountingData rateCountingData = heap.poll();
+            String result = FileIOUtil.buildResultFormat(rateCountingData.getBookId(), rateCountingData.getCountingList());
+            writer.write(result);
 
-            builder.append(rateCountingData.getBookId());
-            rateCountingData.getCountingList().forEach(element -> builder.append(" " + element));
-            builder.append("\n");
-
-            bufferedWriter.write(builder.toString());
             count++;
         }
-        bufferedWriter.close();
+        writer.close();
     }
 
-    private static void readFileAndOfferOneDataToHeap(File file, long lineCountingIndex, Queue<RateCountingData> heap) {
+    private static void readFileAndOfferOneDataToHeap(File file, long lineCountingIndex, Queue<RateCountingData> heap) throws IOException {
         try (Stream<String> lines = Files.lines(file.toPath())) {
             Optional<String> line = lines.skip(lineCountingIndex).findFirst();
             line.ifPresent(lineData -> {
@@ -131,8 +128,6 @@ public class RatingDistribution {
                     heap.offer(offeringData);
                 }
             });
-        } catch (IOException exception) {
-            exception.printStackTrace();
         }
     }
 
@@ -164,29 +159,22 @@ public class RatingDistribution {
 
 
     private static void writeMapDataToFile(long fileIndex, Map<Long, List<Long>> ratingsMap, Long[] sortedKeys) throws IOException {
-        String fileName = PROJECT_DATA_DIRECTORY + OUTPUT_SUB_DATA_DIRECTORY + fileIndex;
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(fileName, true));
+        BufferedWriter writer = FileIOUtil.getBufferedWriter(PROJECT_DATA_DIRECTORY + OUTPUT_SUB_DATA_DIRECTORY + fileIndex);
 
         for (Long key : sortedKeys) {
-            StringBuilder builder = new StringBuilder();
-
-            builder.append(key);
-            ratingsMap.get(key).forEach(element -> builder.append(" " + element));
-            builder.append("\n");
-
-            bufferedWriter.write(builder.toString());
+            String result = FileIOUtil.buildResultFormat(key, ratingsMap.get(key));
+            writer.write(result);
         }
-
-        bufferedWriter.close();
+        writer.close();
     }
 
-    private static Long[] sortingBookIds(Set<Long> keySet) {
+    private static Long[] sortingMapKeys(Set<Long> keySet) {
         Long[] keyArray = keySet.stream().toArray(Long[] :: new);
         Arrays.sort(keyArray);
         return keyArray;
     }
 
-    private static void updateRatingCountOfBook(Map<Long, List<Long>> ratingsMap, Long bookId, Integer rating) {
+    private static void updateCountingList(Map<Long, List<Long>> ratingsMap, Long bookId, Integer rating) {
         List<Long> countingList = ratingsMap.get(bookId);
 
         long previousCount = countingList.get(rating);
@@ -195,7 +183,7 @@ public class RatingDistribution {
         ratingsMap.put(bookId, countingList);
     }
 
-    private static void initializeValueList(Map<Long, List<Long>> ratingsMap, Long bookId) {
+    private static void initializeCountingList(Map<Long, List<Long>> ratingsMap, Long bookId) {
         List<Long> valueList = ratingsMap.getOrDefault(bookId, new ArrayList<Long>() {{
             add(INITIAL_VALUE_OF_COUNT);
             add(INITIAL_VALUE_OF_COUNT);
@@ -238,4 +226,21 @@ class ReviewData {
     @JsonProperty("rating")
     private Integer rating;
 
+}
+
+class FileIOUtil {
+
+    public static BufferedReader getBufferedReader(String filePath) throws FileNotFoundException { return new BufferedReader(new FileReader(filePath)); }
+
+    public static BufferedWriter getBufferedWriter(String filePath) throws IOException { return new BufferedWriter(new FileWriter(filePath, true)); }
+
+    public static String buildResultFormat(Long id, Collection<Long> collection) {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(id);
+        collection.forEach(element -> builder.append(" " + element));
+        builder.append("\n");
+
+        return builder.toString();
+    }
 }
