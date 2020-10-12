@@ -72,7 +72,7 @@ print(filteredRDD.reduce(lambda a,b:a+b)) # 45
 
 print(filteredRDD.reduce(lambda a,b,:a-b)) # -45
 
-print(filteredRDD.repartition(4).reduce(lambda a,b:a-b)) # -45
+print(filteredRDD.repartition(4).reduce(lambda a,b:a-b)) # 파티션을 다시 한다. -45
 
 print(filteredRDD.repartition(4).reduce(lambda a,b: a+b)) # 45
 
@@ -99,9 +99,9 @@ import math
 
 pairRDD = sc.parallelize([('a',1), ('a',2), ('b',1)])
 
-print(pairRDD.groupByKey().mapValues(lambda x: list(x)).collect()) # [('a', [2, 1]), ('b', [1])] / groupByKey() : action 모든 key-value 쌍이 셔플, 네트워크 상에서 불필요한 데이터 전송을 야기
+print(pairRDD.groupByKey().mapValues(lambda x: list(x)).collect()) # [('a', [2, 1]), ('b', [1])] / groupByKey() : transformation 모든 key-value 쌍이 셔플, 네트워크 상에서 불필요한 데이터 전송을 야기
 
-print(pairRDD.reduceByKey(add).collect()) # [('a', 3), ('b', 1)] / reduceByKey() : action pair RDD로 이루어져 있는 경우에 적용 가능, 대규모 분산 dataset에 대해 매우 효과적으로 동작. 그 이유는 node를 통해 data 셔플이 일어나기 전에 각각 파티션에서 키를 통해 출력 데이터를 결합할 수 있기 때문.
+print(pairRDD.reduceByKey(add).collect()) # [('a', 3), ('b', 1)] / reduceByKey() : transformation pair RDD로 이루어져 있는 경우에 적용 가능, 대규모 분산 dataset에 대해 매우 효과적으로 동작. 그 이유는 node를 통해 data 셔플이 일어나기 전에 각각 파티션에서 키를 통해 출력 데이터를 결합할 수 있기 때문.
 
 # 캐싱
 filteredRDD.cache()
@@ -115,6 +115,8 @@ print(filteredRDD.getStorageLevel()) # Serialized 1x Replicated / RDD가 현재 
 filteredRDD.cache() # 다시 캐시
 
 print(filteredRDD.getStorageLevel()) # Memory Serialized 1x Replicated
+
+filteredRDD.keyBy(lambda x : x%2).collect() # 함수 로직으로 key를 만들어서 k:v 로 묶어줌
 ```  
 
 <br>
@@ -134,6 +136,10 @@ print(filteredRDD.getStorageLevel()) # Memory Serialized 1x Replicated
     
     - 가장 효율적인 방법은 RDD 사용을 끝냈으면 `unpersist()` 함수를 써서 RDD를 **메모리에 caching 하는 것을 막는 것이다.**
 
+
+- `count()` action
+    - RDD 내에서 각각 count()
+    - reduce 쪽에서 각각 계산해 놓은 결과를 합침
 
 ## Reference
 
