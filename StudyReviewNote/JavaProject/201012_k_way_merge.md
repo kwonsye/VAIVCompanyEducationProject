@@ -68,7 +68,7 @@
 
 2. Map의 크기가 기준점(10만개)이 되면 Map의 데이터를 **book_id별로 오름차순 정렬한 상태로** sub file에 쓰고 `map.flush()`  
 
-3. 모든 sub file 들의 첫 줄을 `PriorityQueue.offer()`  
+3. 모든 sub file 들이 만들어졌으면, 모든 sub file들의 첫 줄 data를 힙에 넣음 : `PriorityQueue.offer()`  
 
 4. 이때 `PriorityQueue`는 `book_id` 오름차순으로 정렬순서를 compare  
 
@@ -115,7 +115,10 @@
         - **피봇이 두개라서 기존 퀵소트보다 피봇 위치가 더 최적화** 되었고,
         - **최악의 경우가 나올 확률이 거의 없으며**,
         - 데이터가 많을수록 데이터 개수에 비해 더 빠르고 효율적(?)인 소팅이 된다고 한다.
+    
+    - 그래서 기존 방식대로 Map에다 10만개씩 쓰고 key들을 퀵소팅하는 방식을 이용했다.
 
+<br>
 
 ### Reference
 
