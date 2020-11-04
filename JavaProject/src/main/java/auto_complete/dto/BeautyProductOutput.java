@@ -15,26 +15,26 @@ public class BeautyProductOutput {
     @JsonProperty("pname")
     private String productName;
 
-    @JsonProperty("pname_keystroke_no_spacing")
-    private String noSpacingPNameKeystroke;
-
-    @JsonProperty("pname_keystroke_original_spacing")
-    private String originalSpacingPNameKeystroke;
+    @JsonProperty("pname_no_special_char")
+    private String pNamePreprocessingResult;
 
     @JsonProperty("cname")
     private String categoryName;
+
+    @JsonProperty("cname_preprocessing_result")
+    private String cNamePreprocessingResult;
 
     @JsonProperty("bname")
     private String brandName;
 
     @JsonProperty("is_exist_bname")
-    private Integer isExistBrandName; // True, False
+    private Integer isExistBrandName; // true -> 1, false -> 0
 
-    @JsonProperty("kor_bname_keystroke_no_spacing")
-    private String noSpacingKorBNameKeystroke;
+    @JsonProperty("kor_bname")
+    private String korBNamePreprocessingResult;
 
-    @JsonProperty("eng_bname_lowercase_no_spacing")
-    private String noSpacingEngLowercaseBName;
+    @JsonProperty("eng_bname")
+    private String engBNamePreprocessingResult;
 
     @JsonProperty("view_count")
     private Long viewCount;
