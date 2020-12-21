@@ -1,3 +1,4 @@
 Manifest-Version: 1.0
-Main-Class: com.hadoop.project.hadoop_project.twitter_project.TwitterWordCount
+Main-Class: com.hadoop.project.hadoop_project.twitter_project.word_count
+ _sorting.WordCountSorting
 
