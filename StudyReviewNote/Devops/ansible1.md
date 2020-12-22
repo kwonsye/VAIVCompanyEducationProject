@@ -74,7 +74,19 @@
 
 ## 엔서블 Playbook
 
-#TODO
+- 사용자가 원하는 내용을 미리 정의해둔것
+- ex) 대량의 서버에 웹서비스 배포 및 가동해야할때
+    - 1. 각 서버에 nginx 설치
+    - 2. 어플리케이션 파일 전송
+    - 3. 서비스 재시작
+    - 1~3을 엔서블 playbook 에 넣고 실행할 수 있음
+    - `ansible-playbook playbook_file.yml`
+
+![](./images/6.png)
+
+- 장점
+    - 멱등성 : 같은 연산은 여러번 적용해도 결과가 달라지지 않음
+
 
 ## Reference
 - [Google Trend](https://trends.google.com/trends/explore?date=today%205-y&q=Puppet%20automation,Chef%20automation,Ansible%20automation,Salt%20automation)
