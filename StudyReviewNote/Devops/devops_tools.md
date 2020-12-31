@@ -10,7 +10,8 @@
 ##  Infra as code
 
 - 구성 오케스트레이션
-    - AWS 클라우드포메이션(CloudFormation), 테라폼(Terraform)
+    - 
+    - AWS 클라우드포메이션(CloudFormation), **테라폼(Terraform)**
 - 구성 관리
     - 퍼펫, 셰프, 앤서블, 솔트 등
 
@@ -29,4 +30,5 @@
 - 도커
     - https://subicura.com/2016/06/07/zero-downtime-docker-deployment.html#%EC%9E%90%EB%8F%99%ED%99%94
     - https://www.inflearn.com/course/%EB%8F%84%EC%BB%A4-%EC%9E%85%EB%AC%B8#
+    
 - 젠킨스
