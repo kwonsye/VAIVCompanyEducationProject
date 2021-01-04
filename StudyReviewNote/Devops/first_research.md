@@ -116,8 +116,7 @@
 
         - 가격
             ```
-            free open source version -
-            web ui 툴인 Ansible Tower 는
+            free open source version
             ```
 
     - `Chef`
