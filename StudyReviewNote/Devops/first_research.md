@@ -43,8 +43,9 @@
 
     ![](./images/2.png)
 
-    - `Ansible`(레드햇)
+    - `Ansible`(developed by RedHat)
         - 특징
+            - 지원 OS : Linux, Unix-like, MacOS, Windows
             - 최근 가장 많은 관심과 사용률
             ![](./images/4.png)
             - 신규 도입의 경우 많이 사용함
@@ -52,24 +53,71 @@
             - 멱등성 : 같은 조작을 몇번이고 수행하더라도 같은 결과
             - 다양한 태스크를 실행하기 위해 수많은 모듈이 마련되어 있음
             - Push형 아키텍쳐 : master node -> client node
-            - `Ansible Tower` GUI 모니터링 툴 존재
-            ![](./images/10.png)
+            - 하드웨어 사양(시스템 요구 사항)
+                - (최소) CPU : Pentium4 / Memory : 2GB / Disk : 3.0GB/Linux Kernel 3.10
+                - (권장) CPU : Dual Core / Memory : 4GB / Disk : 10.0GB/Linux Kernel 3.10
+
+            - 활용 사례(TODO)
+                - (네이버) Deview 2014, Ansible의 이해와 활용
+                - 펜타시스템 테크놀로지
+                - (카카오) 오픈스택과 Ansible 활용사례
+                - 오픈 스택 기반 사설 클라우드
+                - Toast
+
+            - GUI 모니터링 툴
+                - 제공 기능(tower에서는 확실히 지원되는 기능인데, awx 에서는?)
+                    - dashboard
+                    - 역할 기반 액세스 제어
+                    - Job scheduling
+                    - Multi-playbook workflow
+                    - RESTful API
+                    - 외부 로깅 통합
+                    - 실시간 작업 상태 업데이트
+
+                - `Ansible Tower (from redhat)` 
+                    ![](./images/10.png)
+                    - 장점
+                        - 레드헷에서 완전히 지원됨
+                        - 출시 전에 품질 및 엔지니어링 문제에 대해 완전히 테스트 됨
+                        - 완전한 엔터프라이즈 기능이 포함 된 10 노드 무료 라이센스 제공
+                        - 설치 / 업그레이드가 잘 문서화되고 지원됨
+                    - 단점
+                        - 상업용 유료제품임. 비쌈
+                            ```
+                            standard trial -연간 $ 13,000, 최대 100 개의 노드, 8x5 지원
+                            premium trial - 연간 $ 17,500, 최대 100 개의 노드, 연중 무휴 지원
+                            100 노드 이상시 $5,000/year 비용 발생...
+                            ```
+                - `AWX (opensource)`
+                    - ansible tower 의 오픈소스 버전.ansible 을 GUI 로 관리하고, api 로 제어할 수 있도록 해주는 시스템.
+                    ![](./images/13.png)
+                    ![](./images/14.png)
+                    - 장점
+                        - 노드 제한 없이 오픈소스라 무료
+                        - Ansible Tower의 모든 기능을 사용할 수 있음
+                    - 단점
+                        - 반드시 docker 위에서 돌아가야함
+                        - 공식적으로 지원되지는 않음
+                        - 하루에 여러번 릴리즈될 수 있음
+                        - Ansible Tower release 와 완전히 동기화를 기대하긴 어려움
+                    
 
         - 장점
             - agent 설치가 필요없어서 기술적 복잡도 낮음(<-> `Chef`, `Puppet` 은 클라이언트 프로그램을 호스트에 설치필수)
-            - 빠른 SSH 통신, 빠른 Provision을 이용가능
+            - SSH / winRM 연결 방식은 다른 모델과 비교하여 안전
             - yaml 으로 쓰는 정의파일 구성이 퍼펫이나 쉐프보다 쉬움
             - 레퍼런스가 많음
             - 명령어가 readable
 
         - 단점
+            - SSH 통신 속도
             - 윈도우에서는 엔서블을 설치할 수는 있지만 다른 노드를 관리할 수는 없음.
             - DSL(Domain-Specific Language) 을 통해 로직을 수행하여 학습이 필요
 
         - 가격
             ```
             free open source version -
-            web ui 툴인 Ansible Tower 는 100 노드 이상시 $5,000/year 비용 발생
+            web ui 툴인 Ansible Tower 는
             ```
 
     - `Chef`
@@ -81,11 +129,16 @@
                 ![](./images/9.png)
         - 장점
             - 풍부한 모듈 및 구성 레시피
+            - 프로그래밍이 가능
+            - Community 및 문서 풍부
+            - 대규모 배포에 안정적
             - Git을 중심으로 강력한 버전 제어 기능을 제공
         - 단점
-            - Ruby 및 절차적 코딩 이 필요하여 진입장벽있음
+            - Ruby 및 절차적 코딩 이 필요하여 러닝커브 높음
+            - 초기 설정이 복잡
             - 대규모 코드 기반과 복잡한 환경이 발생한다.
-            - 푸시 기능 미지원
+            - pull-based 방식
+
         - 가격:
             ```
             free open source version
@@ -102,14 +155,16 @@
 
         - 장점
             - Puppet Labs를 통해 잘 구성된 지원 커뮤니티
+            - 대규모 인프라 관리를 위해 매우 안정적
             - 가장 성숙한 인터페이스를 갖추고 거의 모든 OS에서 실행된다
             - 간단한 설치 및 초기 설정
             - 강력한 보고 기능
 
         - 단점
             - 고급 작업을 위해서는 Ruby 기반 CLI 사용해야 한다
-            - 독자적인 언어 사용해서 Mainfest 작성해야함(Puppet의 맞춤형 DSL을 사용을 권장,순수한 Ruby 버전에 대한 지원 축소)
+            - 독자적인 언어 사용해서 Mainfest 작성해야함(Puppet의 맞춤형 DSL을 사용을 권장,순수한 Ruby 버전에 대한 지원 축소) -> 러닝커브 높음
             - 실행 대상 전용 agent를 설치해야하는 단점, agent를 도입하기 위한 준비가 필요
+            - pull-based 방식
         
         - 가격
             ```
@@ -137,6 +192,15 @@
             - 컨테이너를 이용한 가상환경 플랫폼
             - 설정된 값을 **이미지(설정)** 로 구성해서 **컨테이너(실행환경)** 에서 실행할 수 있다.
             - 어느 환경이나 동일하게 작동
+            - Docker Web UI 관리툴
+                - `Portainer`
+                    ![](./images/15.png)
+                    ![](./images/16.png)
+                    ![](./images/17.png)
+                    - 오픈소스,무료
+                    - Docker CLI 기능 지원 : Start/Stop/Delete 등
+                    - Docker Container 별 리소스 모니터링 / 로그 분석 등 기능
+                    - Docker Container 별 실행 Shell 지원
 
         - 장점
             - 이미지를 한번 생성해 놓으면 간편하게 **동일한 환경을 쉽게 재현 가능**
@@ -216,3 +280,9 @@
 - https://zzsza.github.io/development/2019/03/15/terraform/
 - https://elfinlas.github.io/2019/08/14/ci-tool/
 - https://woowabros.github.io/experience/2018/06/26/bros-cicd.html
+- https://www.oss.kr/info_sp/show/fb59bc4b-6c65-4504-a2d5-54131181a05c
+- https://meetup.toast.com/posts/258
+- https://help.iwinv.kr/manual/read.html?idx=548
+- https://sysnet4admin.blogspot.com/2017/06/ansible-gui-7.html#.X_KAhNgzZPY
+- https://engineering.linecorp.com/ko/blog/ansible-awx-for-provisioning-1/
+- https://engineering.linecorp.com/ko/blog/ansible-awx-for-provisioning-1/
